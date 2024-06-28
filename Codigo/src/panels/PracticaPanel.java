@@ -1,6 +1,8 @@
 package panels;
 import Controllers.PracticaController;
 import normalClasses.Practica;
+import normalClasses.ReglaAlfa;
+import normalClasses.ReglaNumerica;
 import normalClasses.ReglaPractica;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 public class PracticaPanel extends JPanel {
     private JTextField codigoField, nombreField, horasField;
     private JCheckBox inhabilitadoCheckBox;
-    private JButton addButton, updateButton, deleteButton, fetchButton;
+    private JButton addButton, updateButton, deleteButton, fetchButton, addruleButton;
     private JList<Practica> practicaList;
     private DefaultListModel<Practica> listModel;
     private PracticaController practicaController;
@@ -48,9 +50,11 @@ public class PracticaPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         addButton = new JButton("Agregar");
+        addruleButton = new JButton("Agregar Regla");
         updateButton = new JButton("Actualizar");
         deleteButton = new JButton("Eliminar");
         fetchButton = new JButton("Buscar por Código");
+        buttonPanel.add(addruleButton);  // Agregar el botón de agregar regla (deberás implementar su lógica
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
@@ -67,7 +71,68 @@ public class PracticaPanel extends JPanel {
         updateButton.addActionListener(this::updatePractica);
         deleteButton.addActionListener(this::deletePractica);
         fetchButton.addActionListener(this::fetchPractica);
+        addruleButton.addActionListener(this::addRegla);
     }
+
+    private void addRegla(ActionEvent e) {
+        Practica selectedPractica = practicaList.getSelectedValue();
+        if (selectedPractica == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una práctica para añadir una regla.", "Ninguna práctica seleccionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Creación del diálogo
+        JDialog addReglaDialog = new JDialog();
+        addReglaDialog.setTitle("Añadir Regla");
+        addReglaDialog.setLayout(new GridLayout(0, 2));
+        addReglaDialog.setSize(300, 200);
+
+        // Elementos del UI
+        JComboBox<String> tipoReglaComboBox = new JComboBox<>(new String[]{"Numérica", "Alfa"});
+        JTextField valorCriticoField = new JTextField();
+        JTextField valorReservadoField = new JTextField();
+        JButton saveButton = new JButton("Guardar Regla");
+
+        addReglaDialog.add(new JLabel("Tipo de Regla:"));
+        addReglaDialog.add(tipoReglaComboBox);
+        addReglaDialog.add(new JLabel("Valor Crítico:"));
+        addReglaDialog.add(valorCriticoField);
+        addReglaDialog.add(new JLabel("Valor Reservado:"));
+        addReglaDialog.add(valorReservadoField);
+        addReglaDialog.add(saveButton);
+
+        // Listener para el botón guardar
+        saveButton.addActionListener(ev -> {
+            try {
+                String tipoRegla = (String) tipoReglaComboBox.getSelectedItem();
+                ReglaPractica regla = null;
+                if ("Numérica".equals(tipoRegla)) {
+                    float valorCritico = Float.parseFloat(valorCriticoField.getText());
+                    float valorReservado = Float.parseFloat(valorReservadoField.getText());
+                    regla = new ReglaNumerica(valorCritico, valorReservado);
+                } else if ("Alfa".equals(tipoRegla)) {
+                    String valorCritico = valorCriticoField.getText();
+                    String valorReservado = valorReservadoField.getText();
+                    regla = new ReglaAlfa(valorCritico, valorReservado);
+                }
+
+                if (regla != null) {
+                    selectedPractica.getReglas().add(regla);
+                    JOptionPane.showMessageDialog(addReglaDialog, "Regla añadida exitosamente.");
+                    listModel.setElementAt(selectedPractica, practicaList.getSelectedIndex()); // Refrescar la lista
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(addReglaDialog, "Error en el formato de los valores numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(addReglaDialog, "Error al añadir regla: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            addReglaDialog.dispose();
+        });
+
+        addReglaDialog.setLocationRelativeTo(this);
+        addReglaDialog.setVisible(true);
+    }
+
 
     private void addPractica(ActionEvent e) {
         try {

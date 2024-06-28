@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import Controllers.SucursalController;
+import Controllers.UsuarioController;
+import normalClasses.Practica;
 import normalClasses.Sucursal;
 import normalClasses.Usuario;
 
@@ -14,9 +16,11 @@ public class SucursalPanel extends JPanel {
     private JList<Sucursal> sucursalList;
     private DefaultListModel<Sucursal> listModel;
     private SucursalController sucursalController;
+    private UsuarioController usuarioController;
 
-    public SucursalPanel(SucursalController sucursalController) {
+    public SucursalPanel(SucursalController sucursalController, UsuarioController usuarioController) {
         this.sucursalController = sucursalController;
+        this.usuarioController = usuarioController;
         initializeUI();
         setupListeners();
     }
@@ -39,8 +43,7 @@ public class SucursalPanel extends JPanel {
         formPanel.add(direccionField);
 
         formPanel.add(new JLabel("Responsable:"));
-        // Suponiendo que tienes una manera de listar usuarios disponibles:
-        responsableCombo = new JComboBox<>();  // Deberías llenarlo con los usuarios disponibles
+        responsableCombo = new JComboBox<>();
         formPanel.add(responsableCombo);
 
         add(formPanel, BorderLayout.NORTH);

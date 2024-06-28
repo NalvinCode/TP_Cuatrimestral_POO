@@ -1,8 +1,9 @@
 package Controllers;
 import normalClasses.Practica;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 
 public class PracticaController {
     private Map<Integer, Practica> practicas = new HashMap<>();
@@ -29,11 +30,10 @@ public class PracticaController {
     }
 
     public Practica obtenerPractica(int codigo) {
-        if (!practicas.containsKey(codigo)) {
-            throw new IllegalArgumentException("No se encontró una práctica con ese código.");
-        }
         return practicas.get(codigo);
     }
+
+    public List<Practica> getPracticas() {
+        return new ArrayList<>(practicas.values());
+    }
 }
-
-

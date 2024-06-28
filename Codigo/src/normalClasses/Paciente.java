@@ -94,6 +94,20 @@ public class Paciente {
     public void addPeticion(Peticion peticion) {
         this.peticiones.add(peticion);
     }
+
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "dni=" + dni +
+                ", name='" + name + '\'' +
+                ", sexo=" + sexo +
+                ", domicilio='" + domicilio + '\'' +
+                ", mail='" + mail + '\'' +
+                ", edad=" + edad +
+                ", peticiones=" + peticiones +
+                ", obraSocial=" + obraSocial +
+                '}';
+    }
 }
 
 

@@ -3,6 +3,7 @@ package normalClasses;
 import enums.RolUsuario;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class Usuario {
     private String name;
@@ -95,4 +96,16 @@ public class Usuario {
 
     public void setRolUsuario(RolUsuario rolUsuario) { this.rolUsuario = rolUsuario;}
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "name='" + name + '\'' +
+                ", mail='" + mail + '\'' +
+                ", DNI=" + DNI +
+                ", FechaNacimiento=" + FechaNacimiento +
+                ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", domicilio='" + domicilio + '\'' +
+                ", rolUsuario=" + rolUsuario +
+                '}';
+    }
 }

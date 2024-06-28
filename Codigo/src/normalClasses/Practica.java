@@ -59,4 +59,11 @@ public class Practica {
         this.reglas = reglas;
     }
 
+    public String toString() {
+        String estado = inhabilitado ? "Inhabilitado" : "Habilitado";
+        String descripcionReglas = reglas.isEmpty() ? "Sin reglas" : "Con reglas";
+        return String.format("Código: %d, Nombre: %s, Horas: %d, Estado: %s, %s",
+                codigo, name, cantidadHoras, estado, descripcionReglas);
+    }
+
 }

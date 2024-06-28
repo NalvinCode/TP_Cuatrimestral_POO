@@ -54,5 +54,15 @@ public class Sucursal {
     public void addPeticion(Peticion peticion) {
         this.peticiones.add(peticion);
     }
+
+    @Override
+    public String toString() {
+        return "Sucursal{" +
+                "numero=" + numero +
+                ", direccion='" + direccion + '\'' +
+                ", responsable=" + responsable +
+                ", peticiones=" + peticiones +
+                '}';
+    }
 }
 

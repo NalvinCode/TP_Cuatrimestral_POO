@@ -5,21 +5,21 @@ import enums.Estado;
 
 public class Resultado {
     private String comentarios;
-    private LocalDateTime FechaCarga;
-    private Estado EstadoResultado;
-    private String Resultado;
+    private LocalDateTime fechaCarga;
+    private Estado estadoResultado;
+    private String resultado;
+    private Practica practica;
 
     // CONSTRUCTOR DEL RESULTADO
 
 
-    public Resultado(String comentarios, LocalDateTime fechaCarga, Estado estadoResultado, String resultado) {
+    public Resultado(String comentarios, LocalDateTime fechaCarga, Estado estadoResultado, String resultado, Practica practica) {
         this.comentarios = comentarios;
-        FechaCarga = fechaCarga;
-        EstadoResultado = estadoResultado;
-        Resultado = resultado;
+        this.fechaCarga = fechaCarga;
+        this.estadoResultado = estadoResultado;
+        this.resultado = resultado;
+        this.practica = practica;
     }
-
-    // GETTERS Y SETTERS DEL RESULTADO
 
     public String getComentarios() {
         return comentarios;
@@ -30,26 +30,34 @@ public class Resultado {
     }
 
     public LocalDateTime getFechaCarga() {
-        return FechaCarga;
+        return fechaCarga;
     }
 
     public void setFechaCarga(LocalDateTime fechaCarga) {
-        FechaCarga = fechaCarga;
+        this.fechaCarga = fechaCarga;
     }
 
     public Estado getEstadoResultado() {
-        return EstadoResultado;
+        return estadoResultado;
     }
 
     public void setEstadoResultado(Estado estadoResultado) {
-        EstadoResultado = estadoResultado;
+        this.estadoResultado = estadoResultado;
     }
 
     public String getResultado() {
-        return Resultado;
+        return resultado;
     }
 
     public void setResultado(String resultado) {
-        Resultado = resultado;
+        this.resultado = resultado;
+    }
+
+    public Practica getPractica() {
+        return practica;
+    }
+
+    public void setPractica(Practica practica) {
+        this.practica = practica;
     }
 }

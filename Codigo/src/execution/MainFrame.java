@@ -21,16 +21,14 @@ public class MainFrame extends JFrame {
     PeticionController peticionController = new PeticionController();
     SucursalController sucursalController = new SucursalController();
     UsuarioController usuarioController = new UsuarioController();
-    ResultadoController resultadoController = new ResultadoController();
 
     private void initializeUI() {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.add("Pacientes", new PacientePanel(pacienteController));
-        tabbedPane.add("Peticiones", new PeticionPanel(peticionController));
+        tabbedPane.add("Peticiones", new PeticionPanel(peticionController, practicaController));
         tabbedPane.add("Prácticas", new PracticaPanel(practicaController));
-        tabbedPane.add("Sucursales", new SucursalPanel(sucursalController));
+        tabbedPane.add("Sucursales", new SucursalPanel(sucursalController, usuarioController));
         tabbedPane.add("Usuarios", new UsuarioPanel(usuarioController));
-        tabbedPane.add("Resultados", new ResultadoPanel(resultadoController));
         add(tabbedPane, BorderLayout.CENTER);
     }
 
@@ -38,3 +36,5 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(MainFrame::new);
     }
 }
+// Compare this snippet from src/panels/PracticaPanel.java:
+// package panels;
