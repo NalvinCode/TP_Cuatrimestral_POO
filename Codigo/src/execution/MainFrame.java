@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
     PeticionController peticionController = new PeticionController();
     SucursalController sucursalController = new SucursalController();
     UsuarioController usuarioController = new UsuarioController();
+    ResultadoController resultadoController = new ResultadoController();
 
     private void initializeUI() {
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -29,6 +30,7 @@ public class MainFrame extends JFrame {
         tabbedPane.add("Prácticas", new PracticaPanel(practicaController));
         tabbedPane.add("Sucursales", new SucursalPanel(sucursalController));
         tabbedPane.add("Usuarios", new UsuarioPanel(usuarioController));
+        tabbedPane.add("Resultados", new ResultadoPanel(resultadoController));
         add(tabbedPane, BorderLayout.CENTER);
     }
 

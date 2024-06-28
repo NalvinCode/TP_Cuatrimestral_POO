@@ -84,8 +84,6 @@ public class PacientePanel extends JPanel {
         deleteButton = new JButton("Eliminar");
         fetchButton = new JButton("Buscar por DNI");
         listAllButton = new JButton("listar Todos");
-        addPeticionButton = new JButton("Añadir Petición");
-        buttonPanel.add(addPeticionButton);
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
