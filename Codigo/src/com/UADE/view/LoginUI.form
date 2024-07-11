@@ -78,7 +78,7 @@
               <focusable value="false"/>
               <font name="Roboto Light" size="16" style="1"/>
               <foreground color="-15592430"/>
-              <text value="Sistema de Gestion de Laboratorio"/>
+              <text value="Sistema de Gestión de Laboratorio"/>
             </properties>
           </component>
           <vspacer id="be9a3">

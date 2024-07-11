@@ -9,12 +9,13 @@ public class Peticion {
     private final Integer codigo;
     private String obraSocial;
     private Date fechaInicio;
+    private Date fechaEntrega;
     private EstadoPeticion estadoPeticion;
     private Integer codPaciente;
     private Integer codSucursal;
     private List<Integer> codPracticas;
 
-    public Peticion(Integer codigo, String obraSocial, Date fechaInicio, EstadoPeticion estadoPeticion, Integer codPaciente, Integer codSucursal, List<Integer> codPracticas) {
+    public Peticion(Integer codigo, String obraSocial, Date fechaInicio, Date fechaEntrega, EstadoPeticion estadoPeticion, Integer codPaciente, Integer codSucursal, List<Integer> codPracticas) {
         this.codigo = codigo;
         this.obraSocial = obraSocial;
         this.fechaInicio = fechaInicio;
@@ -22,6 +23,7 @@ public class Peticion {
         this.codPaciente = codPaciente;
         this.codSucursal = codSucursal;
         this.codPracticas = codPracticas;
+        this.fechaEntrega = fechaEntrega;
     }
 
     public Integer getCodigo() {
@@ -54,6 +56,14 @@ public class Peticion {
 
     public Integer getCodPaciente() {
         return codPaciente;
+    }
+
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
+
+    public Date getFechaEntrega() {
+        return fechaEntrega;
     }
 
     public void setCodPaciente(Integer codPaciente) {

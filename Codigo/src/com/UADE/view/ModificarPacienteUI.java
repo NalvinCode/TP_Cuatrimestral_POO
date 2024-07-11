@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 public class ModificarPacienteUI {
     private JPanel panel1;
@@ -17,18 +19,15 @@ public class ModificarPacienteUI {
     private JTextField txtDomicilio;
     private JTextField txtMail;
     private JTextField txtEdad;
-    private JRadioButton femeninoRadioButton;
-    private JRadioButton masculinoRadioButton;
     private JButton guardarButton;
+    private JComboBox comboSexo;
     private final PacienteController pacientec;
 
     public ModificarPacienteUI(Integer codigo) throws Exception {
         pacientec = Singleton.getInstance().pacienteController;
 
         PacienteDTO pacdto = pacientec.obtenerPaciente(codigo);
-        txtNombreCompleto.setText(pacdto.getNombreCompleto());
 
-        //Puse antes lo otro para poder poner el nombre de titulo
         JFrame frame = new JFrame("Modificar paciente " + txtNombreCompleto.getText());
         panel1.setBorder(new EmptyBorder(15, 15, 15, 15));
         frame.setContentPane(panel1);
@@ -38,41 +37,46 @@ public class ModificarPacienteUI {
         frame.setResizable(false);
         frame.setVisible(true);
 
+        List<Sexo> sexoList = Arrays.stream(Sexo.values()).toList();
+        sexoList.forEach(s-> comboSexo.addItem(s));
 
         nroDni.setText(String.valueOf(pacdto.getDni()));
-
+        txtNombreCompleto.setText(pacdto.getNombreCompleto());
         txtDomicilio.setText(pacdto.getDomicilio());
         txtMail.setText(pacdto.getEmail());
-        if (pacdto.getSexo() == Sexo.FEMENINO) {
-            femeninoRadioButton.setSelected(true);
-        } else if (pacdto.getSexo() == Sexo.MASCULINO) {
-            masculinoRadioButton.setSelected(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione el sexo", "Error", JOptionPane.INFORMATION_MESSAGE);
-        }
         txtEdad.setText(String.valueOf(pacdto.getEdad()));
+        comboSexo.setSelectedItem(pacdto.getSexo());
 
 
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 pacdto.setDni(Integer.valueOf(nroDni.getText()));
                 pacdto.setNombreCompleto(txtNombreCompleto.getText());
                 pacdto.setDomicilio(txtDomicilio.getText());
                 pacdto.setEmail(txtMail.getText());
-                if (femeninoRadioButton.isSelected()) {
-                    pacdto.setSexo(Sexo.FEMENINO);
-                } else if (masculinoRadioButton.isSelected()) {
-                    pacdto.setSexo(Sexo.MASCULINO);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Seleccione el sexo", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
+                pacdto.setSexo((Sexo) comboSexo.getSelectedItem());
                 pacdto.setEdad(Integer.valueOf(txtEdad.getText()));
 
+                boolean pacAct = true;
+
                 try {
-                    pacientec.actualizarPaciente(pacdto);
+                    pacAct = pacientec.actualizarPaciente(pacdto);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                }
+
+                if(!pacAct){
+                    JOptionPane.showMessageDialog(null, "El DNI ingresado corresponde a un paciente ya registrado", "Error al crear Paciente", JOptionPane.INFORMATION_MESSAGE);
+                    return;
                 }
 
                 JOptionPane.showMessageDialog(null, "Se ha modificado el paciente " + txtNombreCompleto.getText(), "Nuevo paciente creado", JOptionPane.INFORMATION_MESSAGE);
@@ -80,15 +84,42 @@ public class ModificarPacienteUI {
                 frame.dispose();
 
                 try {
-                    new MaestroPacientesUI();
+                    new PacientesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
-                frame.dispose();
             }
         });
 
 
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(txtEdad.getText().isEmpty()){
+            campo = "Edad";
+        }
+        if(comboSexo.getSelectedItem() == null){
+            campo = "Domicilio";
+        }
+        if(txtMail.getText().isEmpty()){
+            campo = "Mail";
+        }
+        if(txtDomicilio.getText().isEmpty()){
+            campo = "Domicilio";
+        }
+        if(txtNombreCompleto.getText().isEmpty()){
+            campo = "Nombre completo";
+        }
+        if(nroDni.getText().isEmpty()){
+            campo = "DNI";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        return null;
     }
 }

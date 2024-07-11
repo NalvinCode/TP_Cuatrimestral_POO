@@ -68,13 +68,11 @@ public class ModificarReglaUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(comboBoxTipo.getSelectedItem() == "Numerica"){
-                    try{
-                        Float.parseFloat(valorCriticotxt.getText());
-                        Float.parseFloat(valorReservadotxt.getText());
-                    }catch(NumberFormatException ex){
-                        JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
                 }
 
                 try {
@@ -100,5 +98,42 @@ public class ModificarReglaUI {
                 }
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboBoxTipo.getSelectedItem() == null){
+            campo = "Tipo de Regla";
+        }
+        if(comboBoxCriterio.getSelectedItem() == null){
+            campo = "Criterio";
+        }
+        if(valorReservadotxt.getText().isEmpty()){
+            campo = "Valor Reservado";
+        }
+        if(valorCriticotxt.getText().isEmpty()){
+            campo = "Valor Crítico";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        if(comboBoxTipo.getSelectedItem().toString() == "Numerica"){
+            try{
+                Float.valueOf(valorCriticotxt.getText());
+            }catch (NumberFormatException e){
+                return "Ingrese un Valor Crítico numérico";
+            }
+
+            try{
+                Float.valueOf(valorReservadotxt.getText());
+            }catch (NumberFormatException e){
+                return "Ingrese un Valor Reservado numérico";
+            }
+        }
+
+        return null;
     }
 }

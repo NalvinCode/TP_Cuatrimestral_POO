@@ -1,7 +1,5 @@
 package com.UADE.model;
 
-import com.UADE.enums.EstadoResultado;
-
 public class ResultadoPractica {
     private final Integer codigo;
     private final Integer codPractica;
@@ -9,16 +7,14 @@ public class ResultadoPractica {
     private Float resultadoNumerico;
     private String resultadoLiteral;
     private String transcripcion;
-    private EstadoResultado estado;
 
-    public ResultadoPractica(Integer codigo, Integer codPractica, Integer codPeticion, Float resultadoNumerico, String resultadoLiteral, String transcripcion, EstadoResultado estado) {
+    public ResultadoPractica(Integer codigo, Integer codPractica, Integer codPeticion, Float resultadoNumerico, String resultadoLiteral, String transcripcion) {
         this.codigo = codigo;
         this.codPractica = codPractica;
         this.codPeticion = codPeticion;
         this.resultadoNumerico = resultadoNumerico;
         this.resultadoLiteral = resultadoLiteral;
         this.transcripcion = transcripcion;
-        this.estado = estado;
     }
 
     public Integer getCodigo() {
@@ -57,11 +53,4 @@ public class ResultadoPractica {
         this.transcripcion = transcripcion;
     }
 
-    public EstadoResultado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoResultado estado) {
-        this.estado = estado;
-    }
 }

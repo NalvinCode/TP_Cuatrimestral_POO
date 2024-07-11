@@ -16,6 +16,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -34,17 +38,18 @@ public class NuevaPeticionUI {
     private JButton agregarButton;
     private JComboBox comboBoxSucursal;
     private JComboBox comboBoxObraSocial;
+    private DefaultListModel<String> listModel;
 
     public NuevaPeticionUI() throws Exception {
         JFrame frame = new JFrame("Nueva petición");
         panel1.setBorder(new EmptyBorder(15, 15, 15, 15));
         frame.setContentPane(panel1);
-        frame.setSize(400, 300);
+        frame.setSize(500, 500);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        listModel = new DefaultListModel<String>();
         listPracticas.setModel(listModel);
 
         peticionc = Singleton.getInstance().peticionController;
@@ -93,6 +98,14 @@ public class NuevaPeticionUI {
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 String valueP = (String) comboBoxPacientes.getSelectedItem();
                 Integer codP = Integer.valueOf(valueP.split(" ")[0]);
 
@@ -106,8 +119,24 @@ public class NuevaPeticionUI {
                 String valueS = (String) comboBoxSucursal.getSelectedItem();
                 Integer codS = Integer.valueOf(valueS.split(" ")[0]);
 
+                LocalDateTime now = LocalDateTime.now();
+
+                Integer demoraTotal = 0;
+                for (Integer codigoP : listpract){
+                    PracticaDTO p = practicac.obtenerDatosPractica(codigoP);
+                    if(p.getTiempoEstimado() > demoraTotal){
+                        demoraTotal = p.getTiempoEstimado();
+                    }
+                }
+                LocalDateTime entrega = now.plusHours(demoraTotal);
+
+                ZoneId zoneId = ZoneId.systemDefault();
+
+                Date fechaInicio = Date.from(now.atZone(zoneId).toInstant());
+                Date fechaEntrega = Date.from(entrega.atZone(zoneId).toInstant());
+
                 try {
-                    peticionc.nuevaPeticion(new PeticionDTO(null, (String) comboBoxObraSocial.getSelectedItem(), new Date(), EstadoPeticion.INICIO, codP, codS, listpract));
+                    peticionc.nuevaPeticion(new PeticionDTO(null, (String) comboBoxObraSocial.getSelectedItem(), fechaInicio, fechaEntrega, EstadoPeticion.INICIO, codP, codS, listpract));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -115,11 +144,35 @@ public class NuevaPeticionUI {
                 frame.dispose();
 
                 try {
-                    new MaestroPeticionesUI(null);
+                    new PeticionesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboBoxObraSocial.getSelectedItem() == null){
+            campo = "Obra Social";
+        }
+        if(comboBoxSucursal.getSelectedItem() == null){
+            campo = "Sucursal";
+        }
+        if(comboBoxPacientes.getSelectedItem() == null){
+            campo = "Paciente";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        if(!listModel.elements().asIterator().hasNext()){
+            return "Debe agregar al menos una practica";
+        }
+
+        return null;
     }
 }

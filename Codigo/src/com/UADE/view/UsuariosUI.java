@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class MaestroUsuariosUI {
+public class UsuariosUI {
     private JList<String> listUsuarios;
     private JPanel panel1;
     private JButton nuevoUsuarioButton;
@@ -18,8 +18,8 @@ public class MaestroUsuariosUI {
     private JButton borrarUsuarioButton;
     private final UsuarioController usuc;
 
-    public MaestroUsuariosUI() throws Exception {
-        JFrame frame = new JFrame("Maestro de Usuarios");
+    public UsuariosUI() throws Exception {
+        JFrame frame = new JFrame("Gestión de Usuarios");
         panel1.setBorder(new EmptyBorder(15, 15, 15, 15));
         frame.setContentPane(panel1);
         frame.setSize(500, 500);
@@ -64,7 +64,7 @@ public class MaestroUsuariosUI {
                 frame.dispose();
 
                 try {
-                    new MaestroUsuariosUI();
+                    new UsuariosUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

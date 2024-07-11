@@ -4,13 +4,10 @@ import com.UADE.dao.PeticionDAO;
 import com.UADE.dao.PracticaDAO;
 import com.UADE.dao.ResultadoPracticaDAO;
 import com.UADE.dto.PeticionDTO;
-import com.UADE.dto.PracticaDTO;
 import com.UADE.dto.ResultadoPracticaDTO;
+import com.UADE.enums.Criterio;
 import com.UADE.enums.EstadoPeticion;
-import com.UADE.enums.EstadoResultado;
-import com.UADE.model.Peticion;
-import com.UADE.model.Practica;
-import com.UADE.model.ResultadoPractica;
+import com.UADE.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +58,7 @@ public class PeticionController {
             }
         }
 
-        Peticion peticion = new Peticion(this.getNuevoCodigoPeticion(), petdto.getObraSocial(), petdto.getFechaInicio(), petdto.getEstadoPeticion(), petdto.getCodPaciente(), petdto.getCodSucursal(), practicasfinal);
+        Peticion peticion = new Peticion(this.getNuevoCodigoPeticion(), petdto.getObraSocial(), petdto.getFechaInicio(), petdto.getFechaEntrega() ,petdto.getEstadoPeticion(), petdto.getCodPaciente(), petdto.getCodSucursal(), practicasfinal);
         peticiones.add(peticion);
 
         DAO_Peticion.saveAll(peticiones);
@@ -74,7 +71,7 @@ public class PeticionController {
 
         for (Peticion i : this.peticiones) {
             if (codigo.intValue() == i.getCodigo().intValue()) {
-                petdto = new PeticionDTO(i.getCodigo(), i.getObraSocial(), i.getFechaInicio(), i.getEstadoPeticion(), i.getCodPaciente(), i.getCodSucursal(), i.getCodPracticas());
+                petdto = new PeticionDTO(i.getCodigo(), i.getObraSocial(), i.getFechaInicio(), i.getFechaEntrega(), i.getEstadoPeticion(), i.getCodPaciente(), i.getCodSucursal(), i.getCodPracticas());
                 break;
             }
         }
@@ -82,32 +79,19 @@ public class PeticionController {
         return petdto;
     }
 
-    public List<ResultadoPracticaDTO> obtenerResultadosPeticion(Integer codigo) {
+    public List<ResultadoPracticaDTO> obtenerResultadosPeticion(Integer codigoP) {
         List<ResultadoPracticaDTO> rp = new ArrayList<>();
 
         for (ResultadoPractica i : this.resultadosPracticas) {
-            if (codigo.intValue() == i.getCodigo().intValue()) {
-                rp.add(new ResultadoPracticaDTO(i.getCodigo(), i.getCodPractica(), i.getCodPeticion(), i.getResultadoNumerico(), i.getResultadoLiteral(), i.getResultadoLiteral(), i.getEstado()));
+            if (codigoP.intValue() == i.getCodPeticion().intValue()) {
+                rp.add(new ResultadoPracticaDTO(i.getCodigo(), i.getCodPractica(), i.getCodPeticion(), i.getResultadoNumerico(), i.getResultadoLiteral(), i.getResultadoLiteral()));
             }
         }
 
         return rp;
     }
 
-    public ResultadoPracticaDTO obtenerResultadoPracticaPorCodigo(Integer codigoResultado) {
-        ResultadoPracticaDTO res = null;
-
-        for (ResultadoPractica i : this.resultadosPracticas) {
-            if (codigoResultado.intValue() == i.getCodigo().intValue()) {
-                res = new ResultadoPracticaDTO(i.getCodigo(), i.getCodPractica(), i.getCodPeticion(), i.getResultadoNumerico(), i.getResultadoLiteral(), i.getResultadoLiteral(), i.getEstado());
-                break;
-            }
-        }
-
-        return res;
-    }
-
-    public Boolean nuevoResultadoPractica(ResultadoPracticaDTO result) throws Exception {
+    public boolean nuevoResultadoPractica(ResultadoPracticaDTO result) throws Exception {
         Peticion pet = null;
 
         for (Peticion i : this.peticiones) {
@@ -121,23 +105,12 @@ public class PeticionController {
             return false;
         }
 
-        resultadosPracticas.add(new ResultadoPractica(this.getNuevoCodigoResultadoPractica(), result.getCodPractica(), result.getCodPeticion(), result.getResultadoNumerico(), result.getResultadoLiteral(), result.getTranscription(), result.getEstado()));
+        resultadosPracticas.add(new ResultadoPractica(this.getNuevoCodigoResultadoPractica(), result.getCodPractica(), result.getCodPeticion(), result.getResultadoNumerico(), result.getResultadoLiteral(), result.getTranscription()));
 
         DAO_ResultadoPractica.saveAll(resultadosPracticas);
 
-        boolean failed = false;
-        List<ResultadoPracticaDTO> resultados = this.obtenerResultadosPeticion(pet.getCodigo());
-
-        for (ResultadoPracticaDTO r : resultados) {
-            if (r.getEstado() != EstadoResultado.FINALIZADO) {
-                failed = true;
-            }
-        }
-
-        if (pet.getCodPracticas().size() == resultados.size() && !failed) {
-            pet.setEstadoPeticion(EstadoPeticion.FINALIZADO);
-        } else {
-            pet.setEstadoPeticion(EstadoPeticion.ENPROCESO);
+        if (pet.getEstadoPeticion() == EstadoPeticion.INICIO) {
+            pet.setEstadoPeticion(EstadoPeticion.EN_PROCESO);
         }
 
         DAO_Peticion.saveAll(this.peticiones);
@@ -186,7 +159,7 @@ public class PeticionController {
         List<PeticionDTO> petlist = new ArrayList<>();
 
         for (Peticion i : peticiones) {
-            petlist.add(new PeticionDTO(i.getCodigo(), i.getObraSocial(), i.getFechaInicio(), i.getEstadoPeticion(), i.getCodPaciente(), i.getCodSucursal(), i.getCodPracticas()));
+            petlist.add(new PeticionDTO(i.getCodigo(), i.getObraSocial(), i.getFechaInicio(), i.getFechaEntrega(), i.getEstadoPeticion(), i.getCodPaciente(), i.getCodSucursal(), i.getCodPracticas()));
         }
 
         return petlist;
@@ -200,6 +173,27 @@ public class PeticionController {
         }
 
         DAO_Peticion.saveAll(peticiones);
+    }
+
+    public boolean finalizarPeticion(Integer codPet) throws Exception{
+        boolean petFinal = true;
+
+        PeticionDTO petDTO = obtenerDatosPeticion(codPet);
+        List<ResultadoPracticaDTO> resultados = obtenerResultadosPeticion(codPet);
+        List<Integer> codPracResultados = resultados.stream().map(r -> r.getCodPractica()).toList();
+        for(Integer codP : petDTO.getCodPracticas()){
+            if(!codPracResultados.contains(codP)){
+                petFinal = false;
+                break;
+            }
+        }
+
+        if(petFinal){
+            petDTO.setEstadoPeticion(EstadoPeticion.FINALIZADO);
+            actualizarPeticion(petDTO);
+        }
+
+        return petFinal;
     }
 
 }

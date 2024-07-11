@@ -1,7 +1,6 @@
 package com.UADE.view;
 
 import com.UADE.base.Singleton;
-import com.UADE.controller.PacienteController;
 import com.UADE.controller.PeticionController;
 import com.UADE.controller.PracticaController;
 import com.UADE.dto.*;
@@ -58,7 +57,7 @@ public class PeticionesCriticasUI {
                 try {
                     String value = String.valueOf(listaPeticiones.getSelectedValue());
                     Integer cod = Integer.valueOf(value.split(" ")[0]);
-                    new PeticionesUI(cod);
+                    new PeticionUI(cod);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

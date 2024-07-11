@@ -3,7 +3,6 @@ package com.UADE.view;
 import com.UADE.base.Singleton;
 import com.UADE.controller.PeticionController;
 import com.UADE.dto.ResultadoPracticaDTO;
-import com.UADE.enums.EstadoResultado;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,7 +14,6 @@ public class ResultadoUI {
     private JTextField txtResultadoNumerico;
     private JTextField txtResultadoLiteral;
     private JTextArea txtTranscripcion;
-    private JComboBox<EstadoResultado> comboEstado;
     private JPanel panel1;
 
     private PeticionController petic;
@@ -32,15 +30,20 @@ public class ResultadoUI {
 
         petic = Singleton.getInstance().peticionController;
 
-        for (EstadoResultado e : EstadoResultado.values()) {
-            comboEstado.addItem(e);
-        }
-
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 try {
-                    petic.nuevoResultadoPractica(new ResultadoPracticaDTO(null, codPeticion, codPractica, Float.valueOf(txtResultadoNumerico.getText()), txtResultadoLiteral.getText(), txtTranscripcion.getText(), (EstadoResultado) comboEstado.getSelectedItem()));
+                    petic.nuevoResultadoPractica(new ResultadoPracticaDTO(null, codPractica, codPeticion, Float.valueOf(txtResultadoNumerico.getText()), txtResultadoLiteral.getText(), txtTranscripcion.getText()));
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -48,12 +51,36 @@ public class ResultadoUI {
                 frame.dispose();
 
                 try {
-                    new PeticionesUI(codPeticion);
+                    new PeticionUI(codPeticion);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(txtTranscripcion.getText().isEmpty()){
+            campo = "Transcripcion";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        if(txtResultadoLiteral.getText().isEmpty() && txtResultadoNumerico.getText().isEmpty()){
+            return "Debe cargar al menos 1 resultado";
+        }
+
+        try{
+            Float.valueOf(txtResultadoNumerico.getText());
+        }catch (NumberFormatException e){
+            return "Resultado numérico debe contener solo numeros";
+        }
+
+        return null;
     }
 }

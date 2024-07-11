@@ -28,7 +28,7 @@
         </constraints>
         <properties>
           <background color="-1"/>
-          <text value="Maestro de Practicas"/>
+          <text value="Practicas"/>
         </properties>
       </component>
       <component id="1b36" class="javax.swing.JButton" binding="peticionesButton" default-binding="true">
@@ -46,7 +46,7 @@
         </constraints>
         <properties>
           <background color="-1"/>
-          <text value="Maestro de Sucursales"/>
+          <text value="Sucursales"/>
         </properties>
       </component>
       <component id="8de9a" class="javax.swing.JButton" binding="usuariosButton" default-binding="true">
@@ -55,16 +55,16 @@
         </constraints>
         <properties>
           <background color="-1"/>
-          <text value="Maestro de Usuarios"/>
+          <text value="Usuarios"/>
         </properties>
       </component>
-      <component id="30d44" class="javax.swing.JButton" binding="maestroDePacientesButton" default-binding="true">
+      <component id="30d44" class="javax.swing.JButton" binding="pacientesButton" default-binding="true">
         <constraints>
           <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-1"/>
-          <text value="Maestro de Pacientes"/>
+          <text value="Pacientes"/>
         </properties>
       </component>
       <component id="79cc8" class="javax.swing.JButton" binding="informesButton" default-binding="true">

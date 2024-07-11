@@ -9,12 +9,13 @@ public class PeticionDTO {
     private final Integer codigo;
     private String obraSocial;
     private Date fechaInicio;
+    private Date fechaEntrega;
     private EstadoPeticion estadoPeticion;
     private Integer codPaciente;
     private Integer codSucursal;
     private List<Integer> codPracticas;
 
-    public PeticionDTO(Integer codigo, String obraSocial, Date fechaInicio, EstadoPeticion estadoPeticion, Integer codPaciente, Integer codSucursal, List<Integer> codPracticas) {
+    public PeticionDTO(Integer codigo, String obraSocial, Date fechaInicio, Date fechaEntrega, EstadoPeticion estadoPeticion, Integer codPaciente, Integer codSucursal, List<Integer> codPracticas) {
         this.codigo = codigo;
         this.obraSocial = obraSocial;
         this.fechaInicio = fechaInicio;
@@ -22,6 +23,7 @@ public class PeticionDTO {
         this.codPaciente = codPaciente;
         this.codSucursal = codSucursal;
         this.codPracticas = codPracticas;
+        this.fechaEntrega = fechaEntrega;
     }
 
     public Integer getCodigo() {
@@ -34,6 +36,14 @@ public class PeticionDTO {
 
     public void setObraSocial(String obraSocial) {
         this.obraSocial = obraSocial;
+    }
+
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
+
+    public Date getFechaEntrega() {
+        return fechaEntrega;
     }
 
     public Date getFechaInicio() {

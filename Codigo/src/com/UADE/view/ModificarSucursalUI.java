@@ -5,6 +5,7 @@ import com.UADE.controller.SucursalController;
 import com.UADE.controller.UsuarioController;
 import com.UADE.dto.SucursalDTO;
 import com.UADE.dto.UsuarioDTO;
+import com.UADE.enums.RolSistema;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ModificarSucursalUI {
     private JButton guardarButton;
     private JPanel panel1;
-    private JTextField txtDirecion;
+    private JTextField txtDireccion;
     private JTextField txtTelefono;
     private JComboBox comboBoxResponsable;
     private final SucursalController sucursalc;
@@ -37,19 +38,39 @@ public class ModificarSucursalUI {
         List<UsuarioDTO> usuarios = usuarioC.obtenerListaUsuarios();
 
         for(UsuarioDTO user : usuarios){
-            comboBoxResponsable.addItem(user.getCodigo() + " " + user.getNombreUsuario());
+            if(user.getRolSistema() == RolSistema.ADMINISTRADOR){
+                comboBoxResponsable.addItem(user.getCodigo() + " " + user.getNombreUsuario());
+            }
         }
 
         SucursalDTO sucdto = sucursalc.obtenerDatosSucursal(codigo);
 
-        txtDirecion.setText(sucdto.getDireccion());
+        txtDireccion.setText(sucdto.getDireccion());
         txtTelefono.setText(sucdto.getTelefono());
+
+        Integer indexRT = 0;
+        //Obtengo el indice del responsable tecnico
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (usuarios.get(i).getCodigo().intValue() == sucdto.getCodUsuarioRespTecnico().intValue()) {
+                indexRT = i;
+                break;
+            }
+        }
+        comboBoxResponsable.setSelectedIndex(indexRT);
 
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    sucdto.setDireccion(txtDirecion.getText());
+
+                    String validFields = validateFields();
+
+                    if(validFields != null){
+                        JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+
+                    sucdto.setDireccion(txtDireccion.getText());
                     sucdto.setTelefono(txtTelefono.getText());
 
                     String valueU = (String) comboBoxResponsable.getSelectedItem();
@@ -64,11 +85,36 @@ public class ModificarSucursalUI {
                 frame.dispose();
 
                 try {
-                    new MaestroSucursalesUI();
+                    new SucursalesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
+    }
+    private String validateFields(){
+        String campo = null;
+
+        if(comboBoxResponsable.getSelectedItem() == null){
+            campo = "Responsable Técnico";
+        }
+        if(txtTelefono.getText().isEmpty()){
+            campo = "Telefono";
+        }
+        if(txtDireccion.getText().isEmpty()){
+            campo = "Dirección";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(txtTelefono.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese un Telefono numérico";
+        }
+
+        return null;
     }
 }

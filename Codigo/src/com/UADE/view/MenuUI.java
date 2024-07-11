@@ -15,7 +15,7 @@ public class MenuUI {
     private JButton peticionesButton;
     private JButton sucursalesButton;
     private JButton usuariosButton;
-    private JButton maestroDePacientesButton;
+    private JButton pacientesButton;
     private JButton resultadosButton;
     private JButton informesButton;
     private String usuario;
@@ -41,7 +41,7 @@ public class MenuUI {
         }
 
         if (singleton.rolSistema == RolSistema.LABORATORISTA) {
-            maestroDePacientesButton.setVisible(false);
+            pacientesButton.setVisible(false);
             informesButton.setVisible(false);
         }
 
@@ -49,7 +49,7 @@ public class MenuUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new MaestroSucursalesUI();
+                    new SucursalesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -59,18 +59,18 @@ public class MenuUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new MaestroUsuariosUI();
+                    new UsuariosUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
-        maestroDePacientesButton.addActionListener(new ActionListener() {
+        pacientesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new MaestroPacientesUI();
+                    new PacientesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -103,7 +103,7 @@ public class MenuUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new MaestroPeticionesUI(null);
+                    new PeticionesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class ModificarUsuarioUI {
@@ -66,14 +65,23 @@ public class ModificarUsuarioUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Date datenac = null;
-                try {
-                    datenac = new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText());
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "El formato de fecha de nacimiento no es correcto. Utilice dd/mm/aaaa", "Error", JOptionPane.INFORMATION_MESSAGE);
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
+
+                usermod.setNombreCompleto(txtNombre.getText());
+                usermod.setDni(Integer.valueOf(txtDNI.getText()));
+                try {
+                    usermod.setFechaDeNacimiento(new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText()));
+                } catch (ParseException ex) {
+                    throw new RuntimeException(ex);
+                }
+                usermod.setEmail(txtEmail.getText());
+                usermod.setDomicilio(txtDomicilio.getText());
+                usermod.setRolSistema((RolSistema) comboRol.getSelectedItem());
 
                 Boolean result = null;
                 try {
@@ -92,12 +100,57 @@ public class ModificarUsuarioUI {
                     frame.dispose();
 
                     try {
-                        new MaestroUsuariosUI();
+                        new UsuariosUI();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboRol.getSelectedItem() == null){
+            campo = "Rol";
+        }
+        if(txtDomicilio.getText().isEmpty()){
+            campo = "Domicilio";
+        }
+        if(txtEmail.getText().isEmpty()){
+            campo = "Email";
+        }
+        if(txtNacimiento.getText().isEmpty()){
+            campo = "Fecha de nacimiento";
+        }
+        if(txtDNI.getText().isEmpty()){
+            campo = "DNI";
+        }
+        if(txtNombre.getText().isEmpty()){
+            campo = "Nombre Completo";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(txtDNI.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese un DNI numerico";
+        }
+
+        try {
+            new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText());
+        } catch (ParseException ex) {
+            return "El formato de fecha de nacimiento no es correcto. Utilice dd/mm/aaaa";
+        }
+
+        if(!txtEmail.getText().contains("@")){
+            return "Ingrese un mail valido";
+        }
+
+        return null;
     }
 }

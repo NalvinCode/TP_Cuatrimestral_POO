@@ -67,14 +67,15 @@ public class ModificarPracticaUI {
         guardarModificaciónButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                PracticaDTO practicaActDTO = practicasC.obtenerDatosPractica(codigo);
 
-                practicaDTO.setNombre(txtNombre.getText());
-                practicaDTO.setTiempoEstimado(Integer.valueOf(txtDemora.getText()));
+                practicaActDTO.setNombre(txtNombre.getText());
+                practicaActDTO.setTiempoEstimado(Integer.valueOf(txtDemora.getText()));
 
                 if (oldGrupoIndex == null || comboGrupo.getSelectedIndex() != oldGrupoIndex) {
                     if (oldGrupo != null) {
                         try {
-                            practicasC.retirarPracticaDeSubPractica(practicaDTO.getCodigo(), oldGrupo);
+                            practicasC.retirarPracticaDeSubPractica(practicaActDTO.getCodigo(), oldGrupo);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -86,7 +87,7 @@ public class ModificarPracticaUI {
                         Integer cod = Integer.valueOf(value.split(" ")[0]);
 
                         try {
-                            practicasC.agregarPracticaASubPractica(practicaDTO.getCodigo(), cod);
+                            practicasC.agregarPracticaASubPractica(practicaActDTO.getCodigo(), cod);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -94,7 +95,7 @@ public class ModificarPracticaUI {
                 }
 
                 try {
-                    practicasC.actualizarPractica(practicaDTO);
+                    practicasC.actualizarPractica(practicaActDTO);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -114,7 +115,6 @@ public class ModificarPracticaUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    frame.dispose();
                     try {
                         new ReglaUI(practicaDTO.getCodigo());
                     } catch (Exception ex) {

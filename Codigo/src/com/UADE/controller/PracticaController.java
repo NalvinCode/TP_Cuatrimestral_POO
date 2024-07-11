@@ -61,7 +61,7 @@ public class PracticaController {
     }
 
     public Integer nuevaReglaP (ReglaPracticaDTO reglaPDTO, PracticaDTO practicaDTO) throws Exception {
-        ReglaPractica reglaP = null;
+            ReglaPractica reglaP = null;
 
         if(reglaPDTO instanceof ReglaAlfaDTO){
             ReglaAlfaDTO reglaADTO = (ReglaAlfaDTO) reglaPDTO;
@@ -138,8 +138,8 @@ public class PracticaController {
                     reglaA.setValorCritico(((ReglaAlfaDTO) reglaP).getValorCritico());
                     reglaA.setValorReservado(((ReglaAlfaDTO) reglaP).getValorReservado());
                     DAO_ReglaAlfa.saveAll(reglasA);
+                    break;
                 }
-                break;
             }
         }
         if(reglaP instanceof ReglaNumericaDTO){
@@ -149,8 +149,8 @@ public class PracticaController {
                     reglaN.setValorCritico(((ReglaNumericaDTO) reglaP).getValorCritico());
                     reglaN.setValorReservado(((ReglaNumericaDTO) reglaP).getValorReservado());
                     DAO_ReglaNumerica.saveAll(reglasN);
+                    break;
                 }
-                break;
             }
         }
     }
@@ -287,33 +287,84 @@ public class PracticaController {
 
     public boolean resultadoCritico(Integer codigoP, ResultadoPracticaDTO resultado){
         boolean resultadoC = false;
+        PracticaDTO pracDTO = obtenerDatosPractica(codigoP);
         for(ReglaPractica reglaP : reglasP){
-            if(reglaP.getCodigo().intValue() == codigoP.intValue()){
+            if(pracDTO.getReglasPractica().contains(reglaP.getCodigo())){
 
                 if(reglaP instanceof ReglaAlfa){
                     if(reglaP.getCriterio() == Criterio.IGUAL){
                         resultadoC = ((ReglaAlfa) reglaP).getValorCritico().equals(resultado.getResultadoLiteral());
+                        break;
                     }
                     if(reglaP.getCriterio() == Criterio.DISTINTO){
                         resultadoC = !((ReglaAlfa) reglaP).getValorCritico().equals(resultado.getResultadoLiteral());
+                        break;
                     }
                 }
 
                 if(reglaP instanceof ReglaNumerica){
                     if(reglaP.getCriterio() == Criterio.IGUAL){
                         resultadoC = ((ReglaNumerica) reglaP).getValorCritico().equals(resultado.getResultadoNumerico());
+                        break;
                     }
                     if(reglaP.getCriterio() == Criterio.MAYOR){
                         resultadoC = ((ReglaNumerica) reglaP).getValorCritico() < resultado.getResultadoNumerico();
+                        break;
                     }
                     if(reglaP.getCriterio() == Criterio.MENOR){
                         resultadoC = ((ReglaNumerica) reglaP).getValorCritico() > resultado.getResultadoNumerico();
+                        break;
                     }
                 }
-
-                break;
             }
         }
         return resultadoC;
+    }
+
+    public boolean tieneResultadoReservado(List<ResultadoPracticaDTO> resultados){
+        boolean resultadoR = false;
+        for(ResultadoPracticaDTO res : resultados){
+            PracticaDTO pracDTO = obtenerDatosPractica(res.getCodPractica());
+            for(ReglaPractica reglaP : reglasP){
+                if(pracDTO.getReglasPractica().contains(reglaP.getCodigo())){
+
+                    if(reglaP instanceof ReglaAlfa){
+                        if(reglaP.getCriterio() == Criterio.IGUAL){
+                            resultadoR = ((ReglaAlfa) reglaP).getValorReservado().equals(res.getResultadoLiteral());
+                            break;
+                        }
+                        if(reglaP.getCriterio() == Criterio.DISTINTO){
+                            resultadoR = !((ReglaAlfa) reglaP).getValorReservado().equals(res.getResultadoLiteral());
+                            break;
+                        }
+                    }
+
+                    if(reglaP instanceof ReglaNumerica){
+                        if(reglaP.getCriterio() == Criterio.IGUAL){
+                            resultadoR = ((ReglaNumerica) reglaP).getValorReservado().equals(res.getResultadoNumerico());
+                            break;
+                        }
+                        if(reglaP.getCriterio() == Criterio.MAYOR){
+                            resultadoR = ((ReglaNumerica) reglaP).getValorReservado() < res.getResultadoNumerico();
+                            break;
+                        }
+                        if(reglaP.getCriterio() == Criterio.MENOR){
+                            resultadoR = ((ReglaNumerica) reglaP).getValorReservado() > res.getResultadoNumerico();
+                            break;
+                        }
+                    }
+                }
+            }
+            if(resultadoR){
+                break;
+            }
+            //Valor critico es tambien reservado.
+            boolean resC = resultadoCritico(pracDTO.getCodigo(), res);
+            if(resC){
+                resultadoR = true;
+                break;
+            }
+        }
+        return resultadoR;
     }
 }

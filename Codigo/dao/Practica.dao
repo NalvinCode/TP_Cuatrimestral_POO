@@ -1,1 +1,4 @@
-{"codigo":1,"nombre":"Practica 1","tiempoEstimado":10,"codSubPracticas":[],"codReglasPractica":[1]}
+{"codigo":1,"nombre":"HEMOGRAMA","tiempoEstimado":10,"codSubPracticas":[2,3],"codReglasPractica":[]}
+{"codigo":2,"nombre":"RECUENTO GLOBULOS ROJOS","tiempoEstimado":10,"codSubPracticas":[],"codReglasPractica":[1]}
+{"codigo":3,"nombre":"RECUENTO GLOBULOS BLANCOS","tiempoEstimado":20,"codSubPracticas":[],"codReglasPractica":[2]}
+{"codigo":4,"nombre":"ANALISIS DE ORINA","tiempoEstimado":24,"codSubPracticas":[],"codReglasPractica":[3]}

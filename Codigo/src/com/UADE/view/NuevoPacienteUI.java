@@ -9,18 +9,18 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 public class NuevoPacienteUI {
     private JPanel panel1;
     private JTextField txtNombreCompleto;
     private JTextField txtDomicilio;
     private JTextField txtMail;
-    private JTextField txtSexo;
+    private JComboBox comboSexo;
     private JTextField txtEdad;
     private JButton guardarButton;
     private JTextField nroDni;
-    private JRadioButton femeninoRadioButton;
-    private JRadioButton masculinoRadioButton;
     private final PacienteController pacientec;
 
     public NuevoPacienteUI() throws Exception {
@@ -33,6 +33,9 @@ public class NuevoPacienteUI {
         frame.setResizable(false);
         frame.setVisible(true);
 
+        List<Sexo> sexoList = Arrays.stream(Sexo.values()).toList();
+        sexoList.forEach(s-> comboSexo.addItem(s));
+
         pacientec = Singleton.getInstance().pacienteController;
 
         guardarButton.addActionListener(new ActionListener() {
@@ -40,38 +43,78 @@ public class NuevoPacienteUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Sexo sexo = null;
+                String validFields = validateFields();
 
-                if (femeninoRadioButton.isSelected()) {
-                    sexo = (Sexo.FEMENINO);
-                } else if (masculinoRadioButton.isSelected()) {
-                    sexo = (Sexo.MASCULINO);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Seleccione el sexo", "Error", JOptionPane.INFORMATION_MESSAGE);
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
                 }
 
                 Integer codigoNuevoPac = null;
                 String nombrePac = null;
 
                 try {
-                    PacienteDTO pacdto = new PacienteDTO(null, Integer.valueOf(nroDni.getText()), txtNombreCompleto.getText(), txtDomicilio.getText(), txtMail.getText(), sexo, Integer.valueOf(txtEdad.getText()));
+                    PacienteDTO pacdto = new PacienteDTO(null, Integer.valueOf(nroDni.getText()), txtNombreCompleto.getText(), txtDomicilio.getText(), txtMail.getText(), (Sexo) comboSexo.getSelectedItem(), Integer.valueOf(txtEdad.getText()));
                     codigoNuevoPac = pacientec.nuevoPaciente(pacdto);
-                    nombrePac = txtNombreCompleto.getText();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
+                if(codigoNuevoPac == null){
+                    JOptionPane.showMessageDialog(null, "El DNI ingresado corresponde a un paciente ya registrado", "Error al crear Paciente", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+                nombrePac = txtNombreCompleto.getText();
                 JOptionPane.showMessageDialog(null, "Se ha creado el paciente " + nombrePac, "Nuevo paciente creado", JOptionPane.INFORMATION_MESSAGE);
 
                 try {
-                    new MaestroPacientesUI();
+                    new PacientesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
                 frame.dispose();
             }
         });
+    }
+    private String validateFields(){
+        String campo = null;
 
+        if(txtEdad.getText().isEmpty()){
+            campo = "Edad";
+        }
+        if(comboSexo.getSelectedItem() == null){
+            campo = "Domicilio";
+        }
+        if(txtMail.getText().isEmpty()){
+            campo = "Mail";
+        }
+        if(txtDomicilio.getText().isEmpty()){
+            campo = "Domicilio";
+        }
+        if(txtNombreCompleto.getText().isEmpty()){
+            campo = "Nombre completo";
+        }
+        if(nroDni.getText().isEmpty()){
+            campo = "DNI";
+        }
 
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(nroDni.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese un DNI numerico";
+        }
+
+        try{
+            Integer.valueOf(txtEdad.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese una edad numerica";
+        }
+
+        return null;
     }
 }

@@ -44,6 +44,13 @@ public class NuevaPracticaUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 Integer codPr = null;
 
                 try {
@@ -73,5 +80,31 @@ public class NuevaPracticaUI {
 
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboGrupo.getSelectedItem() == null){
+            campo = "Grupo";
+        }
+        if(txtDemora.getText().isEmpty()){
+            campo = "Demora";
+        }
+        if(txtNombre.getText().isEmpty()){
+            campo = "Nombre de Práctica";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(txtDemora.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese una Demora numérica";
+        }
+
+        return null;
     }
 }

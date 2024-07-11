@@ -39,6 +39,7 @@ public class PacienteController {
     }
 
     public Boolean actualizarPaciente(PacienteDTO pac) throws Exception {
+
         Paciente p = null;
 
         for (Paciente i : this.pacientes) {
@@ -48,7 +49,12 @@ public class PacienteController {
             }
         }
 
+        if (buscarPacientePorDNI(pac.getDni()) != null && pac.getCodigo() != p.getCodigo()){
+            return false;
+        }
+
         if (p != null) {
+            p.setDni(pac.getDni());
             p.setNombreCompleto(pac.getNombreCompleto());
             p.setDomicilio(pac.getDomicilio());
             p.setEmail(pac.getEmail());

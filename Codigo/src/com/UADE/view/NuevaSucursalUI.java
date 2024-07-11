@@ -5,6 +5,7 @@ import com.UADE.controller.SucursalController;
 import com.UADE.controller.UsuarioController;
 import com.UADE.dto.SucursalDTO;
 import com.UADE.dto.UsuarioDTO;
+import com.UADE.enums.RolSistema;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -37,12 +38,22 @@ public class NuevaSucursalUI {
         List<UsuarioDTO> usuarios = usuarioC.obtenerListaUsuarios();
 
         for(UsuarioDTO user : usuarios){
-            comboBoxResponsable.addItem(user.getCodigo() + " " + user.getNombreUsuario());
+            if(user.getRolSistema() == RolSistema.ADMINISTRADOR){
+                comboBoxResponsable.addItem(user.getCodigo() + " " + user.getNombreUsuario());
+            }
         }
 
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 Integer codigoNuevaSuc = null;
 
                 String valueU = (String) comboBoxResponsable.getSelectedItem();
@@ -57,7 +68,7 @@ public class NuevaSucursalUI {
                 JOptionPane.showMessageDialog(null, "Se ha creado la sucursal " + codigoNuevaSuc, "Nueva sucursal creada", JOptionPane.INFORMATION_MESSAGE);
 
                 try {
-                    new MaestroSucursalesUI();
+                    new SucursalesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -65,5 +76,31 @@ public class NuevaSucursalUI {
                 frame.dispose();
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboBoxResponsable.getSelectedItem() == null){
+            campo = "Responsable Técnico";
+        }
+        if(txtTelefono.getText().isEmpty()){
+            campo = "Telefono";
+        }
+        if(txtDireccion.getText().isEmpty()){
+            campo = "Dirección";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(txtTelefono.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese un Telefono numérico";
+        }
+
+        return null;
     }
 }

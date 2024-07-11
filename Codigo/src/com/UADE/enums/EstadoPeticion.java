@@ -1,5 +1,5 @@
 package com.UADE.enums;
 
 public enum EstadoPeticion {
-    INICIO, ENPROCESO, FINALIZADO, ERRORENANALISIS
+    INICIO, EN_PROCESO, FINALIZADO
 }

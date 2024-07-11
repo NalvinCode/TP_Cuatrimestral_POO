@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 public class NuevoUsuarioUI {
     private JButton guardarButton;
@@ -48,17 +46,21 @@ public class NuevoUsuarioUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Date datenac = null;
-                try {
-                    datenac = new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText());
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "El formato de fecha de nacimiento no es correcto. Utilice dd/mm/aaaa", "Error", JOptionPane.INFORMATION_MESSAGE);
+                String validFields = validateFields();
+
+                if(validFields != null){
+                    JOptionPane.showMessageDialog(null, validFields, "Error", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
 
                 Integer result = null;
-                UsuarioDTO newuser = new UsuarioDTO(null, txtUsuario.getText(), txtClave.getText(), txtEmail.getText(), txtNombre.getText(), txtDomicilio.getText(), Integer.valueOf(txtDNI.getText()), datenac, (RolSistema) comboRol.getSelectedItem());
+                UsuarioDTO newuser;
+
+                try {
+                    newuser = new UsuarioDTO(null, txtUsuario.getText(), txtClave.getText(), txtEmail.getText(), txtNombre.getText(), txtDomicilio.getText(), Integer.valueOf(txtDNI.getText()), new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText()), (RolSistema) comboRol.getSelectedItem());
+                } catch (ParseException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 try {
                     result = usuc.nuevoUsuario(newuser);
@@ -67,19 +69,70 @@ public class NuevoUsuarioUI {
                 }
 
                 if (result == null) {
-                    JOptionPane.showMessageDialog(null, "El nombre de usuario ya existe.", "Error", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "El usuario ingresado ya existe.", "Error", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Se ha creado el usuario " + txtUsuario.getText(), "Nuevo usuario creado", JOptionPane.INFORMATION_MESSAGE);
 
                     frame.dispose();
 
                     try {
-                        new MaestroUsuariosUI();
+                        new UsuariosUI();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
             }
         });
+    }
+
+    private String validateFields(){
+        String campo = null;
+
+        if(comboRol.getSelectedItem() == null){
+            campo = "Rol";
+        }
+        if(txtDomicilio.getText().isEmpty()){
+            campo = "Domicilio";
+        }
+        if(txtEmail.getText().isEmpty()){
+            campo = "Email";
+        }
+        if(txtNacimiento.getText().isEmpty()){
+            campo = "Fecha de nacimiento";
+        }
+        if(txtDNI.getText().isEmpty()){
+            campo = "DNI";
+        }
+        if(txtNombre.getText().isEmpty()){
+            campo = "Nombre Completo";
+        }
+        if(txtClave.getText().isEmpty()){
+            campo = "Clave";
+        }
+        if(txtUsuario.getText().isEmpty()){
+            campo = "Nombre de usuario";
+        }
+
+        if(campo != null){
+            return "Por favor ingrese el campo " + campo;
+        }
+
+        try{
+            Integer.valueOf(txtDNI.getText());
+        }catch (NumberFormatException e){
+            return "Ingrese un DNI numerico";
+        }
+
+        try {
+            new SimpleDateFormat("dd/MM/yyyy").parse(txtNacimiento.getText());
+        } catch (ParseException ex) {
+            return "El formato de fecha de nacimiento no es correcto. Utilice dd/mm/aaaa";
+        }
+
+        if(!txtEmail.getText().contains("@")){
+            return "Ingrese un mail valido";
+        }
+
+        return null;
     }
 }

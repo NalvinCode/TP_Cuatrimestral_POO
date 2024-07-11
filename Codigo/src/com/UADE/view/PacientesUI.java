@@ -10,18 +10,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class MaestroPacientesUI {
+public class PacientesUI {
     private final PacienteController pacic;
     private JList<String> listPacientes;
     private JPanel panel1;
-    private JButton listaPacientesButton;
     private JButton nuevoPacienteButton;
     private JButton modificarPacienteButton;
     private JButton borrarPacienteButton;
-    private JButton consultarPeticionesDelPacienteButton;
 
-    public MaestroPacientesUI() throws Exception {
-        JFrame frame = new JFrame("Maestro de Pacientes");
+    public PacientesUI() throws Exception {
+        JFrame frame = new JFrame("Gestión de Pacientes");
         panel1.setBorder(new EmptyBorder(15, 15, 15, 15));
         frame.setContentPane(panel1);
         frame.setSize(500, 500);
@@ -85,22 +83,7 @@ public class MaestroPacientesUI {
                 frame.dispose();
 
                 try {
-                    new MaestroPacientesUI();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-
-        consultarPeticionesDelPacienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String value = listPacientes.getSelectedValue();
-                Integer cod = Integer.valueOf(value.split(" ")[0]);
-
-                try {
-                    new MaestroPeticionesUI(cod);
+                    new PacientesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

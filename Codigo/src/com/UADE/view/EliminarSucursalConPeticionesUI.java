@@ -63,7 +63,7 @@ public class EliminarSucursalConPeticionesUI {
                 frame.dispose();
 
                 try {
-                    new MaestroSucursalesUI();
+                    new SucursalesUI();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
