@@ -1,6 +1,6 @@
 # Sistema de Gestión de Laboratorio
 
-Trabajo práctico grupal para la materia Paradigma Orientado a Objetos en la Universidad Argentina de la Empresa. El mismo consistió en el desarrollo de una aplicación funcional desasarrolada en Java de un sistema que permite gestionar las peticiones que recibe un laboratorio, sus resultados y pacientes.
+Trabajo práctico grupal para la materia Paradigma Orientado a Objetos en la Universidad Argentina de la Empresa. El mismo consistió en el desarrollo de una aplicación funcional desaarrollada en Java de un sistema que permite gestionar las peticiones que recibe un laboratorio, sus resultados y pacientes.
 
 # Requisitos previos
 - Tener instalado [Intellij IDEA](https://www.jetbrains.com/idea/download/?section=windows).
