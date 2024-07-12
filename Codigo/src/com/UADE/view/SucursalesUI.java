@@ -65,12 +65,18 @@ public class SucursalesUI {
                             ex.printStackTrace();
                         }
                     } else {
+                        boolean result = false;
+
                         try {
-                            sucursalc.eliminarSucursal(cod);
+                            result = sucursalc.eliminarSucursal(cod);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
 
+                        if (!result) {
+                            JOptionPane.showMessageDialog(null, "No se pudo eliminar la sucursal. Verifique si tiene peticiones finalizadas.", "Error", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
                         try {
                             new SucursalesUI();
                         } catch (Exception ex) {

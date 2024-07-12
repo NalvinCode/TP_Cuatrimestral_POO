@@ -79,7 +79,7 @@ public class SucursalController {
     public boolean sucursalTienePeticionesActivas(Integer codigo) throws Exception {
         List<Peticion> peticiones = new PeticionDAO().getAll();
 
-        for (Peticion i : peticiones) { // Regla de negocio
+        for (Peticion i : peticiones) {
             if (i.getCodSucursal().intValue() == codigo.intValue()) {
                 if (i.getEstadoPeticion() != EstadoPeticion.FINALIZADO) {
                     return true;

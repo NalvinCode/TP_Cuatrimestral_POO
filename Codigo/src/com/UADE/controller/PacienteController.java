@@ -69,13 +69,13 @@ public class PacienteController {
         return true;
     }
 
-    public void borrarPaciente(Integer codigo) throws Exception {
+    public boolean borrarPaciente(Integer codigo) throws Exception {
         List<Peticion> peticiones = new PeticionDAO().getAll();
 
         for (Peticion i : peticiones) { // Regla de negocio
             if (i.getCodPaciente().intValue() == codigo.intValue()) {
                 if (i.getEstadoPeticion() == EstadoPeticion.FINALIZADO) { // Verificacion de estado
-                    return;
+                    return false;
                 }
             }
         }
@@ -88,6 +88,8 @@ public class PacienteController {
         }
 
         DAO_Paciente.saveAll(pacientes);
+
+        return true;
     }
 
     public Integer buscarPacientePorDNI(Integer dni) {

@@ -74,10 +74,17 @@ public class PacientesUI {
                 String value = listPacientes.getSelectedValue();
                 Integer cod = Integer.valueOf(value.split(" ")[0]);
 
+                boolean result = false;
+
                 try {
-                    pacic.borrarPaciente(cod);
+                    result = pacic.borrarPaciente(cod);
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                }
+
+                if (!result) {
+                    JOptionPane.showMessageDialog(null, "No se pudo eliminar al paciente. Verifique si tiene peticiones finalizadas.", "Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
                 }
 
                 frame.dispose();
